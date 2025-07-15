@@ -2,7 +2,7 @@
 import { db } from "@/utils/db";
 import { UserAnswer } from "@/utils/schema";
 import { eq } from "drizzle-orm";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -34,6 +34,15 @@ function Feedback({ params }) {
     setFeedbackList(result);
   };
 
+  const overAllRating = useMemo(() => {
+    if (feedbackList.length === 0) return "0.0";
+    const totalRatings = feedbackList.reduce(
+      (acc, feedback) => acc + feedback.rating,
+      0
+    );
+    return (totalRatings / feedbackList.length).toFixed(1);
+  });
+
   return (
     <div className="p-10">
       <h2 className="text-3xl font-bold text-green-500">Congratulation!</h2>
@@ -48,7 +57,7 @@ function Feedback({ params }) {
             Here is your interview feedback
           </h2>
           <h2 className="text-primary text-lg my-3">
-            Your overall interview rating: <strong>7/10</strong>
+            Your overall interview rating: <strong>{overAllRating} / 10</strong>
           </h2>
 
           <h2 className="text-sm text-gray-500">
